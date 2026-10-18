@@ -1,12 +1,216 @@
-const agents={"רונה":["ניהול עסקי ואישי","יומן, משימות, דואר"],"שלומי":["יומן עבודה וטכנאים","יומן העבודה"],"דן":["חשבוניות, ספקים ותשלומים","SmartBI, Google Sheets"],"נועה":["מיילים ותקשורת לקוחות","Gmail, WhatsApp"],"איתי":["רשתות, מצלמות וציוד","SNMP, RoyalNetworkInsight"],"מאיה":["נסיעות ומחקר","מנועי תיירות"],"יובל":["פיתוח ואוטומציה","GitHub, Claude Code"],"הילה":["תוכן ושיווק","AIModelsStudio"],"אלון":["בית חכם","Home Assistant"]};
-const name=new URLSearchParams(location.search).get('name')||"רונה", agent=agents[name]||agents["רונה"];document.querySelector("#name").textContent=name;document.querySelector("#role").textContent=agent[0];document.querySelector("#tools").textContent="כלים מתוכננים: "+agent[1];
-const photo=document.querySelector("#photo");photo.src="https://i.pravatar.cc/180?img="+({"רונה":47,"שלומי":12,"דן":14,"נועה":44,"איתי":15,"מאיה":49,"יובל":13,"הילה":32,"אלון":11}[name]||47);photo.onerror=()=>{photo.style.display="none"};
-const log=document.querySelector("#log"),msg=document.querySelector("#msg"),notice=document.querySelector("#connection"),send=document.querySelector("#send");let history=[];const key="royalcom-chat-"+name;
-function bubble(role,content){const el=document.createElement("div");el.className="msg "+(role==="user"?"user":"ai");el.textContent=content;log.append(el);log.scrollTop=log.scrollHeight}
-try{history=JSON.parse(sessionStorage.getItem(key)||"[]");history.forEach(x=>bubble(x.role,x.content))}catch(e){history=[]}
-const api=location.hostname==="localhost"||location.hostname==="127.0.0.1"?location.origin+"/api/chat":null;
-notice.textContent=api?"ממשק מקומי: בודקת אם שרת ה-AI פעיל…":"גרסת תצוגה: שרת AI טרם חובר לאתר הציבורי. אפשר להקליד ולהכתיב, אך שליחת בקשות דורשת שרת מאובטח.";send.disabled=!api;
-if(api)fetch("/api/health").then(r=>{if(!r.ok)throw Error();notice.textContent="שרת AI מחובר; חיבורי המערכות העסקיות עדיין דורשים אימות";send.disabled=false}).catch(()=>{notice.textContent="שרת ה-AI המקומי אינו פועל";send.disabled=true});
-send.onclick=async()=>{const content=msg.value.trim();if(!content||!api)return;send.disabled=true;bubble("user",content);history.push({role:"user",content});msg.value="";try{const r=await fetch(api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({agent:name,messages:history.slice(-20)})});const data=await r.json();if(!r.ok)throw Error(data.error||"שגיאת שרת");bubble("assistant",data.reply);history.push({role:"assistant",content:data.reply});sessionStorage.setItem(key,JSON.stringify(history))}catch(e){bubble("assistant","הבקשה לא בוצעה: "+e.message)}finally{send.disabled=false}};
-document.querySelector("#clear").onclick=()=>{history=[];log.replaceChildren();sessionStorage.removeItem(key)};
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const mic=document.querySelector("#mic");if(SR){mic.onclick=()=>{const r=new SR();r.lang="he-IL";r.onresult=e=>{msg.value+=(msg.value?" ":"")+e.results[0][0].transcript};r.onerror=e=>alert("זיהוי דיבור: "+e.error);r.start()}}else{mic.disabled=true;mic.textContent="מיקרופון לא נתמך בדפדפן"}
+﻿const name = new URLSearchParams(location.search).get('name') || 'רונה';
+
+const el = {
+  photo: document.querySelector('#photo'),
+  name: document.querySelector('#name'),
+  role: document.querySelector('#role'),
+  tools: document.querySelector('#tools'),
+  connection: document.querySelector('#connection'),
+  log: document.querySelector('#log'),
+  msg: document.querySelector('#msg'),
+  send: document.querySelector('#send'),
+  mic: document.querySelector('#mic'),
+  clear: document.querySelector('#clear'),
+};
+
+el.name.textContent = name;
+el.photo.src = 'https://api.dicebear.com/9.x/bottts-neutral/svg?seed=' + encodeURIComponent(name);
+el.photo.onerror = () => { el.photo.style.display = 'none'; };
+
+const storageKey = 'royalcom-chat-' + name;
+let history = [];
+try {
+  history = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+} catch {
+  history = [];
+}
+
+function bubble(role, text) {
+  const node = document.createElement('div');
+  node.className = 'msg ' + (role === 'user' ? 'user' : role === 'assistant' ? 'ai' : 'sys');
+  node.textContent = text;
+  el.log.append(node);
+  el.log.scrollTop = el.log.scrollHeight;
+  return node;
+}
+
+function typingBubble() {
+  const node = document.createElement('div');
+  node.className = 'msg ai';
+  node.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+  el.log.append(node);
+  el.log.scrollTop = el.log.scrollHeight;
+  return node;
+}
+
+history.forEach((m) => bubble(m.role, m.content));
+
+let agent = null;
+let serverOk = false;
+let apiKeyConfigured = false;
+
+function setNotice(text, kind) {
+  el.connection.textContent = text;
+  el.connection.className = 'notice' + (kind ? ' ' + kind : '');
+}
+
+function refreshSendState() {
+  const ready = serverOk && agent && agent.enabled && apiKeyConfigured;
+  el.send.disabled = !ready;
+}
+
+async function loadStatus() {
+  try {
+    const [healthRes, agentsRes] = await Promise.all([
+      fetch('/api/health'),
+      fetch('/api/agents'),
+    ]);
+    if (!healthRes.ok || !agentsRes.ok) throw new Error('bad response');
+
+    const health = await healthRes.json();
+    const { agents } = await agentsRes.json();
+
+    serverOk = true;
+    apiKeyConfigured = Boolean(health.hasApiKey);
+    agent = agents.find((a) => a.name === name) || null;
+
+    if (!agent) {
+      setNotice(`הסוכן "${name}" לא נמצא במרשם agents-registry.json`, 'err');
+    } else {
+      el.role.textContent = agent.domain || '';
+      el.tools.textContent = agent.planned_connectors ? 'כלים מתוכננים: ' + agent.planned_connectors : '';
+
+      if (!agent.enabled) {
+        setNotice(`הסוכן אינו מופעל (enabled:false). ${agent.connection_status || ''}`, 'err');
+      } else if (!apiKeyConfigured) {
+        setNotice('שרת ה-AI מחובר, אך ANTHROPIC_API_KEY לא מוגדר (ראה server/.env.example)', 'err');
+      } else {
+        setNotice('מחובר לשרת ה-AI — מוכן לשיחה', 'ok');
+      }
+    }
+  } catch {
+    serverOk = false;
+    setNotice('שרת ה-AI המקומי אינו פעיל. הרץ: cd server && npm install && npm start', 'err');
+  }
+  refreshSendState();
+}
+
+loadStatus();
+
+el.send.onclick = async () => {
+  const content = el.msg.value.trim();
+  if (!content || el.send.disabled) return;
+
+  el.send.disabled = true;
+  bubble('user', content);
+  history.push({ role: 'user', content });
+  el.msg.value = '';
+
+  const aiNode = typingBubble();
+  let reply = '';
+  let gotFirstToken = false;
+
+  try {
+    const res = await fetch('/api/chat/' + encodeURIComponent(name), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history.slice(-20) }),
+    });
+
+    if (!res.ok || !res.body) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `שגיאת שרת (${res.status})`);
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const events = buffer.split('\n\n');
+      buffer = events.pop() ?? '';
+
+      for (const block of events) {
+        let eventType = 'message';
+        let dataLine = '';
+        for (const line of block.split('\n')) {
+          if (line.startsWith('event:')) eventType = line.slice(6).trim();
+          else if (line.startsWith('data:')) dataLine = line.slice(5).trim();
+        }
+        if (!dataLine) continue;
+
+        let payload;
+        try {
+          payload = JSON.parse(dataLine);
+        } catch {
+          continue;
+        }
+
+        if (eventType === 'error') {
+          throw new Error(payload.error || 'שגיאת מודל');
+        }
+        if (eventType === 'done') continue;
+        if (payload.delta) {
+          if (!gotFirstToken) {
+            gotFirstToken = true;
+            aiNode.textContent = '';
+          }
+          reply += payload.delta;
+          aiNode.textContent = reply;
+          el.log.scrollTop = el.log.scrollHeight;
+        }
+      }
+    }
+
+    if (!reply) throw new Error('לא התקבלה תשובה מהמודל');
+
+    history.push({ role: 'assistant', content: reply });
+    sessionStorage.setItem(storageKey, JSON.stringify(history));
+  } catch (err) {
+    aiNode.className = 'msg sys';
+    aiNode.textContent = 'הבקשה לא בוצעה: ' + err.message;
+    history.pop(); // drop the unanswered user turn so it isn't resent silently
+  } finally {
+    refreshSendState();
+  }
+};
+
+el.msg.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    el.send.click();
+  }
+});
+
+el.clear.onclick = () => {
+  history = [];
+  el.log.replaceChildren();
+  sessionStorage.removeItem(storageKey);
+};
+
+const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognitionImpl) {
+  const recognizer = new SpeechRecognitionImpl();
+  recognizer.lang = 'he-IL';
+  recognizer.interimResults = false;
+
+  recognizer.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    el.msg.value += (el.msg.value ? ' ' : '') + transcript;
+  };
+  recognizer.onerror = (e) => {
+    setNotice('זיהוי דיבור נכשל: ' + e.error, 'err');
+  };
+  recognizer.onstart = () => el.mic.classList.add('on');
+  recognizer.onend = () => el.mic.classList.remove('on');
+
+  el.mic.onclick = () => recognizer.start();
+} else {
+  el.mic.disabled = true;
+  el.mic.textContent = 'מיקרופון לא נתמך בדפדפן זה';
+}
+
