@@ -2,7 +2,6 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
-import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { getAgent, listAgentsPublic } from './registry.js';
@@ -20,7 +19,6 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: true })); // same-origin by default; see README for remote hosting notes
 app.use(express.json({ limit: '32kb' }));
 
 const chatLimiter = rateLimit({
@@ -154,9 +152,11 @@ app.post('/api/chat/:agentName', chatLimiter, async (req, res) => {
 // server/.env) are explicitly blocked so secrets never become reachable
 // over HTTP even though they live under the same repo tree.
 app.use('/server', (req, res) => res.status(404).end());
-app.use(express.static(REPO_ROOT, { dotfiles: 'deny', index: 'index.html' }));
+const publicFiles = new Set(['index.html','agent.html','chat.html','chat.js','itai.html','itai.js','maya.html','maya.js','yuval.html','yuval.js','workspace.html','workspace.css','rona.jpg']);
+app.get('/', (req,res)=>res.sendFile(path.join(REPO_ROOT,'index.html')));
+app.get('/:file', (req,res,next)=>{if(!publicFiles.has(req.params.file))return res.status(404).end();res.sendFile(path.join(REPO_ROOT,req.params.file));});
 
-app.listen(PORT, () => {
+app.listen(PORT, process.env.HOST || '127.0.0.1', () => {
   console.log(`RoyalCom AI Hub server listening on http://localhost:${PORT}`);
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('ANTHROPIC_API_KEY is not set — chat requests will fail until server/.env is configured.');
