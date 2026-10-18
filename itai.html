@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoyalCom | סביבת עבודה — איתי (רשתות ומצלמות)</title>
+<link rel="stylesheet" href="./workspace.css">
+</head>
+<body>
+<header>
+  <a href="./index.html">← כל הסוכנים</a>
+  <div class="title"><strong>🌐 איתי — רשתות, VLAN ומצלמות</strong><span>סביבת עבודה ייעודית</span></div>
+</header>
+<main>
+
+  <section class="panel">
+    <h2>סטטוס מערכת הרשת המקומית</h2>
+    <div class="notice" id="pingNotice">לא נבדק עדיין</div>
+    <p class="muted">
+      Royal Network Insight היא אפליקציה נפרדת שרצה מקומית בכתובת
+      <code>http://127.0.0.1:8080</code> — רק במחשב שעליו היא מופעלת. הפורטל הזה
+      <b>אינו</b> מחובר אליה באמצעות API: הבדיקה למטה היא "פינג" זמינות בלבד
+      (בודקת אם משהו מקשיב על הפורט), לא קריאת מידע אמיתית מהמערכת.
+    </p>
+    <div class="actions-row">
+      <button id="checkPing">בדוק זמינות (127.0.0.1:8080)</button>
+      <a class="btn secondary" href="http://127.0.0.1:8080/" target="_blank" rel="noopener noreferrer">פתח את Royal Network Insight</a>
+      <a class="btn ghost" href="./chat.html?name=איתי">💬 צ'אט עם איתי</a>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>מדריך אבחון — שימוש כרשימת בדיקה</h2>
+    <p class="muted">תוכן עיוני כללי לעבודה בשטח. אינו נשלף ממערכת חיה ואינו מחליף תיעוד רשת פנימי של רויאלקום.</p>
+
+    <details open>
+      <summary>תקלת VLAN / קישוריות</summary>
+      <ol>
+        <li>אמת לאיזה VLAN מוגדר הפורט של המכשיל (access / trunk, ה-VLAN ID והאם tagged/untagged).</li>
+        <li>בדוק שה-VLAN מוגדר וקיים גם במתג המקור וגם במתג המרוחק (ולא רק ב-interface אחד).</li>
+        <li>ודא שהקישור בין המתגים (uplink/trunk) מעביר את ה-VLAN הרלוונטי (allowed VLAN list).</li>
+        <li>בדוק טבלת ARP / MAC לראות אם המכשיר בכלל "נראה" ברשת מהצד השני.</li>
+        <li>אם יש מספר VLAN-ים חדשים — בדוק הגדרות routing/inter-VLAN (ACL, Firewall) שלא חוסמות.</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>מתגים ופורטים</summary>
+      <ol>
+        <li>בדוק מצב פיזי של הפורט: Link/Activity LED, מהירות ו-duplex שהתאמה (לא auto מול fixed).</li>
+        <li>בדוק סטטוס הפורט בניהול המתג: up/down, errors, CRC, collisions, broadcast storm.</li>
+        <li>בדוק אם הפורט מוגדר ב-Err-disable / security violation (port security, storm-control).</li>
+        <li>החלף כבל/פורט לבדיקה כדי לשלול תקלת חוט.</li>
+        <li>אם רלוונטי — בדוק PoE: הספק זמין, budget לא נגמר, המכשיר מזוהה ומקבל מתח.</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>מצלמות ו-NVR</summary>
+      <ol>
+        <li>ודא שהמצלמה מקבלת כתובת IP תקינה (סטטית/DHCP) ושאין התנגשות כתובות.</li>
+        <li>בדוק רוחב פס ו-bitrate בפועל מול יכולת הרשת/PoE, בעיקר אם יש הקפאות/טשטוש.</li>
+        <li>בדוק סנכרון זמן (NTP) בין המצלמה, ה-NVR והרשת — שגיאות זמן גורמות לבעיות הקלטה.</li>
+        <li>אשר שה-NVR מצליח "לראות" את המצלמה ברשת (ping/ONVIF) לפני בדיקת תצורה.</li>
+        <li>בדוק מקום אחסון פנוי ומצב דיסקים ב-NVR אם ההקלטה מפסיקה.</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>SNMP וניטור</summary>
+      <ol>
+        <li>אמת community string / SNMPv3 credentials תואמים בין המתג למערכת הניטור.</li>
+        <li>בדוק שה-ACL של המתג מתיר את כתובת ה-IP של שרת הניטור לפנות ב-SNMP.</li>
+        <li>בדוק אם ה-OID המבוקש נתמך בגרסת ה-firmware של המכשיר.</li>
+        <li>בדוק טראפ (traps) מול polling — לעיתים רק אחד מהם מוגדר/פתוח בפיירוול.</li>
+      </ol>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>הכנת פתק תקלה</h2>
+    <p class="muted">מלא פרטים כדי להכין תיאור תקלה מסודר — להעתקה או להמשך שיחה עם איתי.</p>
+
+    <label for="device">מכשיר / אזור</label>
+    <input id="device" placeholder="למשל: מתג קומה 2, מצלמת כניסה ראשית, NVR ראשי">
+
+    <div class="grid-2">
+      <div>
+        <label for="vlan">VLAN / רשת (אם רלוונטי)</label>
+        <input id="vlan" placeholder="למשל: VLAN 20 - מצלמות">
+      </div>
+      <div>
+        <label for="urgency">דחיפות</label>
+        <select id="urgency">
+          <option value="שוטף">שוטף</option>
+          <option value="דחוף">דחוף</option>
+          <option value="קריטי — משפיע על אבטחה/ייצור">קריטי — משפיע על אבטחה/ייצור</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="symptom">תיאור התקלה</label>
+    <textarea id="symptom" placeholder="מה קורה בפועל? מתי התחיל? האם קבוע או לסירוגין?"></textarea>
+
+    <label for="tried">מה נבדק עד כה</label>
+    <textarea id="tried" placeholder="שלבים מהמדריך למעלה (או אחרים) שבוצעו, ותוצאתם"></textarea>
+
+    <div class="actions-row">
+      <button id="build">הכן פתק</button>
+    </div>
+
+    <label for="output">פתק מוכן</label>
+    <textarea id="output" readonly placeholder="הפתק המוכן יופיע כאן"></textarea>
+    <div class="actions-row">
+      <button id="copy" class="secondary">העתק</button>
+      <button id="toChat" class="ghost">המשך לצ'אט עם איתי</button>
+    </div>
+  </section>
+
+  <footer>סביבת עבודה מקומית. אין קריאת API חיה למערכת הרשת — רק קישור יציאה ובדיקת זמינות.</footer>
+</main>
+<script src="./itai.js"></script>
+</body>
+</html>

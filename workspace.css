@@ -1,0 +1,58 @@
+/* Shared styles for the dedicated per-agent workspace pages
+   (itai.html, maya.html, yuval.html). Keeps visual language
+   consistent with chat.html / index.html without duplicating CSS
+   in every workspace page. */
+*{box-sizing:border-box}
+body{margin:0;font:16px Arial,sans-serif;background:#edf2f9;color:#172d4d}
+header{background:#0c315c;color:white;padding:16px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header a{color:white;text-decoration:none}
+header .title{display:flex;flex-direction:column}
+header .title strong{font-size:19px}
+header .title span{font-size:13px;color:#b7c8e2}
+main{max-width:980px;margin:auto;padding:16px}
+.panel{background:white;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 2px 12px #15355a12}
+.panel h2{margin:0 0 12px;font-size:19px}
+.muted{color:#6b7f96;font-size:14px}
+a{color:#2468bf}
+
+.notice{border-right:4px solid #d08b25;padding:10px 12px;background:#fff8e9;border-radius:8px;margin:8px 0}
+.notice.ok{border-right-color:#2e9e5b;background:#eefcf2}
+.notice.err{border-right-color:#c0392b;background:#fdeeec}
+.notice.info{border-right-color:#2468bf;background:#eaf2ff}
+
+button,.btn{border:0;background:#1668cb;color:white;border-radius:10px;padding:11px 16px;cursor:pointer;font:inherit;text-decoration:none;display:inline-block;margin:4px 4px 0 0}
+button.secondary,.btn.secondary{background:#e5efff;color:#1550a4}
+button.ghost,.btn.ghost{background:#eef2f7;color:#344a66}
+button:disabled{background:#9aa9bc;cursor:not-allowed}
+button:disabled:hover{background:#9aa9bc}
+
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 4px;color:#2b4166}
+input,select,textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #c7d3e3;border-radius:10px;font:inherit;background:white}
+textarea{min-height:88px;resize:vertical}
+textarea[readonly]{background:#f6f8fc;color:#33415a}
+fieldset{border:1px solid #dce5f2;border-radius:12px;padding:12px;margin:12px 0}
+fieldset legend{font-size:13px;font-weight:bold;color:#2b4166;padding:0 6px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 16px}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+.checkbox-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.checkbox-row label{display:flex;align-items:center;gap:6px;font-weight:normal;background:#f1f5fb;border:1px solid #dce5f2;border-radius:20px;padding:7px 12px;margin:0;font-size:14px}
+.checkbox-row input{width:auto;margin:0}
+
+details{border:1px solid #dce5f2;border-radius:12px;padding:10px 14px;margin:10px 0;background:#fafcff}
+details summary{cursor:pointer;font-weight:bold;padding:4px 0}
+details ol,details ul{margin:8px 0 4px;padding-right:20px;line-height:1.7}
+
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.badge.ok{background:#e4f7ec;color:#1c7a4c}
+.badge.err{background:#fdeeec;color:#a3291a}
+.badge.warn{background:#fff3df;color:#8a5a0a}
+.badge.pending{background:#eef2f7;color:#56687f}
+
+.links{display:flex;flex-wrap:wrap;gap:9px}
+.links a{color:#1659b8;text-decoration:none;padding:11px;border:1px solid #dce5f2;border-radius:9px}
+
+.actions-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+footer{color:#62738d;font-size:12px;margin:22px 0;text-align:center}

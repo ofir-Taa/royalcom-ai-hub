@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoyalCom | סביבת עבודה — יובל (GitHub ופיתוח)</title>
+<link rel="stylesheet" href="./workspace.css">
+</head>
+<body>
+<header>
+  <a href="./index.html">← כל הסוכנים</a>
+  <div class="title"><strong>💻 יובל — GitHub, Claude Code ופיתוח</strong><span>סביבת עבודה ייעודית</span></div>
+</header>
+<main>
+
+  <section class="panel">
+    <h2>סטטוס</h2>
+    <div class="notice info">
+      הריפו <code>ofir-Taa/Task-system</code> קיים ב-GitHub באמת — הקישורים למטה פותחים אותו
+      בפועל. הפורטל הזה <b>אינו</b> מחובר ל-GitHub API: אין קריאה אוטומטית של Issues/PR,
+      ואין יצירת Issue מהשרת — כל פעולה בפועל קורית בדפדפן שלך, מחוברת לחשבון ה-GitHub שלך.
+    </div>
+    <div class="actions-row">
+      <a class="btn" href="https://github.com/ofir-Taa/Task-system" target="_blank" rel="noopener noreferrer">📁 הריפו</a>
+      <a class="btn secondary" href="https://github.com/ofir-Taa/Task-system/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+      <a class="btn secondary" href="https://github.com/ofir-Taa/Task-system/pulls" target="_blank" rel="noopener noreferrer">Pull Requests</a>
+      <a class="btn secondary" href="https://github.com/ofir-Taa/Task-system/actions" target="_blank" rel="noopener noreferrer">Actions</a>
+      <a class="btn ghost" href="./chat.html?name=יובל">💬 צ'אט עם יובל</a>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>תהליך עבודה מומלץ</h2>
+    <ol>
+      <li>פתח Issue מפורט (ראה טופס מתחת) — כל משימה מתחילה מ-Issue, לא מקוד ישר.</li>
+      <li>צור ענף מה-Issue: <code>feature/&lt;מספר&gt;-תיאור-קצר</code> או <code>fix/&lt;מספר&gt;-תיאור-קצר</code>.</li>
+      <li>פתח PR מוקדם (Draft) כדי לקבל נראות על העבודה בתהליך.</li>
+      <li>לפני בקשת Review: הרץ בדיקות/לינט מקומית, עדכן תיעוד אם רלוונטי.</li>
+      <li>מזג רק אחרי Review ואחרי שה-CI (אם קיים) עבר בירוק.</li>
+      <li>פריסה לייצור/שינוי מערכות חיות — רק באישור מפורש, לפי agents-registry.json.</li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <h2>הכנת Issue</h2>
+    <div class="grid-2">
+      <div>
+        <label for="issueType">סוג</label>
+        <select id="issueType">
+          <option value="feature">תכונה חדשה (feature)</option>
+          <option value="bug">תיקון באג (bug)</option>
+          <option value="chore">תחזוקה (chore)</option>
+          <option value="docs">תיעוד (docs)</option>
+        </select>
+      </div>
+      <div>
+        <label for="priority">עדיפות</label>
+        <select id="priority">
+          <option value="נמוכה">נמוכה</option>
+          <option value="רגילה" selected>רגילה</option>
+          <option value="גבוהה">גבוהה</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="title">כותרת</label>
+    <input id="title" placeholder="תיאור קצר וברור של המשימה">
+
+    <label for="area">אזור / קומפוננטה</label>
+    <input id="area" placeholder="למשל: server/, chat.js, agents-registry.json">
+
+    <label for="description">תיאור</label>
+    <textarea id="description" placeholder="מה הבעיה / מה רוצים להשיג, והקשר רלוונטי"></textarea>
+
+    <label for="acceptance">קריטריוני קבלה</label>
+    <textarea id="acceptance" placeholder="מה חייב להתקיים כדי שהמשימה תיחשב גמורה"></textarea>
+
+    <div class="actions-row">
+      <button id="build">הכן Issue</button>
+    </div>
+
+    <label for="output">תצוגה מקדימה (Markdown)</label>
+    <textarea id="output" readonly style="min-height:200px"></textarea>
+
+    <div class="actions-row">
+      <button id="copy" class="secondary">העתק Markdown</button>
+      <a id="openIssue" class="btn" target="_blank" rel="noopener noreferrer">פתח Issue חדש ב-GitHub</a>
+      <button id="toChat" class="ghost">המשך לצ'אט עם יובל</button>
+    </div>
+    <p class="muted">הכפתור "פתח Issue חדש ב-GitHub" ממלא מראש כותרת ותוכן בטופס ה-Issue האמיתי של GitHub — עדיין יש ללחוץ "Submit" שם כדי לפתוח אותו בפועל.</p>
+  </section>
+
+  <footer>אין גישת API ל-GitHub מהפורטל הזה. כל קישור פותח את GitHub האמיתי בדפדפן שלך.</footer>
+</main>
+<script src="./yuval.js"></script>
+</body>
+</html>

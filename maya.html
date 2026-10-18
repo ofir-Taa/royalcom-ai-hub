@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoyalCom | סביבת עבודה — מאיה (טיול תאילנד פברואר 2027)</title>
+<link rel="stylesheet" href="./workspace.css">
+</head>
+<body>
+<header>
+  <a href="./index.html">← כל הסוכנים</a>
+  <div class="title"><strong>✈️ מאיה — תכנון טיול תאילנד, פברואר 2027</strong><span>סביבת עבודה ייעודית</span></div>
+</header>
+<main>
+
+  <section class="panel">
+    <h2>סטטוס</h2>
+    <div class="notice warn">
+      זהו כלי תכנון מקומי בלבד. אין כאן חיפוש מחירים חי, אין חיבור API למלונות/טיסות, ואין
+      סוכן AI מחובר בעמוד הזה. הטופס שומר נתונים בדפדפן שלך (localStorage) ומכין בריף טקסטואלי
+      שאפשר להעתיק או להמשיך איתו לצ'אט עם מאיה (בכפוף להפעלת הסוכן ב-agents-registry.json).
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>פרטי בסיס לטיול</h2>
+    <div class="grid-2">
+      <div>
+        <label for="startDate">תאריך יציאה</label>
+        <input id="startDate" type="date">
+      </div>
+      <div>
+        <label for="endDate">תאריך חזרה</label>
+        <input id="endDate" type="date">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label for="travelers">מספר נוסעים</label>
+        <input id="travelers" type="number" min="1" value="2">
+      </div>
+      <div>
+        <label for="origin">נקודת מוצא</label>
+        <input id="origin" placeholder="למשל: תל אביב (TLV)">
+      </div>
+    </div>
+    <p class="muted">תאריכי הברירת מחדל מתייחסים לפברואר 2027 בלבד כהצעת פתיחה — יש לעדכן לתאריכים המדויקים.</p>
+  </section>
+
+  <section class="panel">
+    <h2>אילוצי מסלול קיימים</h2>
+    <p class="muted">
+      חלק קריטי: כל דבר שכבר הוזמן/שולם/קבוע ואסור לשבור אותו בתכנון. מאיה (או כל סוכן אחר)
+      צריכה לתכנן <b>מסביב</b> לאילוצים האלה, לא להתעלם מהם.
+    </p>
+
+    <label for="lockedFlights">טיסות שכבר הוזמנו (תאריך, שעה, חברה, מספר טיסה אם יש)</label>
+    <textarea id="lockedFlights" placeholder="למשל: הלוך 03/02/2027 TLV-BKK, חזור 17/02/2027 BKK-TLV"></textarea>
+
+    <label for="lockedStays">לינה שכבר הוזמנה/שולמה (מקום, תאריכים, מדיניות ביטול)</label>
+    <textarea id="lockedStays" placeholder="למשל: 3 לילות בבנגקוק 03-06/02, ללא אפשרות ביטול"></textarea>
+
+    <div class="grid-2">
+      <div>
+        <label for="visaPassport">דרכון / ויזה</label>
+        <input id="visaPassport" placeholder="תוקף דרכון, צורך בויזה/Visa Exemption">
+      </div>
+      <div>
+        <label for="leaveDates">אילוצי חופש מעבודה</label>
+        <input id="leaveDates" placeholder="תאריכים שאושרו/לא ניתנים לשינוי">
+      </div>
+    </div>
+
+    <label for="budgetCeiling">תקציב מקסימלי כולל</label>
+    <input id="budgetCeiling" placeholder="למשל: עד 25,000 ש״ח לשני נוסעים">
+
+    <label for="otherConstraints">אילוצים נוספים</label>
+    <textarea id="otherConstraints" placeholder="בריאות, טיסות פנים שכבר הוזמנו, אירוע שצריך להיות נוכחים בו, וכו׳"></textarea>
+  </section>
+
+  <section class="panel">
+    <h2>העדפות למסלול</h2>
+    <label>אזורים מעניינים</label>
+    <div class="checkbox-row" id="regions">
+      <label><input type="checkbox" value="בנגקוק"> בנגקוק</label>
+      <label><input type="checkbox" value="צ'יאנג מאי"> צ'יאנג מאי</label>
+      <label><input type="checkbox" value="קרבי"> קרבי</label>
+      <label><input type="checkbox" value="פוקט"> פוקט</label>
+      <label><input type="checkbox" value="קו פיפי / קו לנטה"> קו פיפי / קו לנטה</label>
+      <label><input type="checkbox" value="קו סמוי"> קו סמוי</label>
+      <label><input type="checkbox" value="האי סוקטאי"> איי סוקוטאי/שקטים אחרים</label>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label for="pace">קצב מסלול</label>
+        <select id="pace">
+          <option value="רגוע">רגוע — בסיס אחד לכמה ימים</option>
+          <option value="מאוזן" selected>מאוזן</option>
+          <option value="אינטנסיבי">אינטנסיבי — הרבה תזוזה</option>
+        </select>
+      </div>
+      <div>
+        <label for="budgetTier">רמת תקציב ליום</label>
+        <select id="budgetTier">
+          <option value="תקציבי">תקציבי</option>
+          <option value="בינוני" selected>בינוני</option>
+          <option value="פרימיום">פרימיום</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="notes">הערות / בקשות נוספות</label>
+    <textarea id="notes" placeholder="פעילויות שחשוב לכלול, מה לא רלוונטי, מגבלות תזונה, וכו׳"></textarea>
+  </section>
+
+  <section class="panel">
+    <h2>שמירה וייצוא</h2>
+    <div class="actions-row">
+      <button id="save">שמור בדפדפן</button>
+      <button id="load" class="secondary">טען שמור</button>
+      <button id="exportJson" class="ghost">ייצוא JSON</button>
+      <label class="btn ghost" style="margin:4px 4px 0 0">
+        ייבוא JSON<input id="importJson" type="file" accept="application/json" style="display:none">
+      </label>
+      <button id="clear" class="ghost">נקה טופס</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>בריף למומחה</h2>
+    <div class="actions-row">
+      <button id="build">הכן בריף</button>
+    </div>
+    <label for="output">בריף מוכן</label>
+    <textarea id="output" readonly style="min-height:220px" placeholder="הבריף המוכן יופיע כאן"></textarea>
+    <div class="actions-row">
+      <button id="copy" class="secondary">העתק</button>
+      <button id="toChat" class="ghost">המשך לצ'אט עם מאיה</button>
+    </div>
+  </section>
+
+  <footer>כלי תכנון מקומי בלבד — ללא חיפוש מחירים חי וללא גישת API לנסיעות.</footer>
+</main>
+<script src="./maya.js"></script>
+</body>
+</html>

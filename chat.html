@@ -1,6 +1,58 @@
-<!doctype html><html lang="he" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RoyalCom | שיחה עם מומחה</title>
-<style>body{margin:0;font:16px Arial;background:#edf2f9;color:#172d4d}header{background:#0c315c;color:white;padding:16px 22px}main{max-width:850px;margin:auto;padding:15px}.panel{background:white;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 2px 12px #15355a12}.head{display:flex;gap:15px;align-items:center}.avatar{width:74px;height:74px;object-fit:cover;border-radius:50%}a{color:#2468bf}.muted{color:#6b7f96;font-size:14px}.log{min-height:200px;max-height:50vh;overflow:auto;display:flex;flex-direction:column;gap:12px}.msg{padding:13px;border-radius:15px;max-width:85%;white-space:pre-wrap;line-height:1.5}.user{align-self:flex-start;background:#e0ebfc}.ai{align-self:flex-end;background:#f1f4f8}textarea{width:100%;min-height:80px;box-sizing:border-box;padding:12px;font:inherit;border:1px solid #b9c9dd;border-radius:12px}button{border:0;background:#1668cb;color:white;border-radius:10px;padding:12px 15px;cursor:pointer;margin:5px}button:disabled{background:#91a3b8}.notice{border-right:4px solid #d08b25;padding:10px;background:#fff8e9}h1{margin:0 0 5px;font-size:25px}</style>
-<header><a href="./index.html" style="color:white">← כל הסוכנים</a>　RoyalCom AI Hub</header><main><section class="panel head"><img class="avatar" id="photo" alt="תמונת סוכן"><div><h1 id="name"></h1><div id="role"></div><div class="muted" id="tools"></div></div></section>
-<section class="panel"><div class="notice" id="connection">בודקת חיבור למנוע השיחה…</div><div class="log" id="log" aria-live="polite"></div></section>
-<section class="panel"><label for="msg"><b>מה תרצה לשאול או לבצע?</b></label><textarea id="msg" placeholder="כתוב בקשה מקצועית לסוכן..."></textarea><div><button id="send">שלח למומחה</button><button id="mic" type="button">🎙️ הכתבה קולית</button><button id="clear" type="button">נקה שיחה</button></div><div class="muted">מיקרופון פועל רק בדפדפנים התומכים בזיהוי דיבור. פעולות במערכות חיצוניות מחייבות חיבור והרשאה.</div></section></main>
-<script src="./chat.js"></script></html>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RoyalCom | שיחה עם מומחה</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px Arial,sans-serif;background:#edf2f9;color:#172d4d}
+header{background:#0c315c;color:white;padding:16px 22px;display:flex;align-items:center;gap:14px}
+header a{color:white;text-decoration:none}
+main{max-width:850px;margin:auto;padding:15px}
+.panel{background:white;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 2px 12px #15355a12}
+.head{display:flex;gap:15px;align-items:center}
+.avatar{width:74px;height:74px;object-fit:cover;border-radius:50%;background:#dce8f8}
+a{color:#2468bf}
+.muted{color:#6b7f96;font-size:14px}
+.log{min-height:220px;max-height:55vh;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:4px}
+.msg{padding:13px;border-radius:15px;max-width:85%;white-space:pre-wrap;line-height:1.5}
+.user{align-self:flex-start;background:#e0ebfc}
+.ai{align-self:flex-end;background:#f1f4f8}
+.sys{align-self:center;background:#fff0e0;color:#7a4a12;font-size:13px}
+.dots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:#7c93b3;animation:blink 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+textarea{width:100%;min-height:80px;box-sizing:border-box;padding:12px;font:inherit;border:1px solid #b9c9dd;border-radius:12px;resize:vertical}
+button{border:0;background:#1668cb;color:white;border-radius:10px;padding:12px 15px;cursor:pointer;margin:5px 5px 0 0;font:inherit}
+button:disabled{background:#91a3b8;cursor:default}
+button.mic.on{background:#c0392b}
+.notice{border-right:4px solid #d08b25;padding:10px;background:#fff8e9;border-radius:8px}
+.notice.ok{border-right-color:#2e9e5b;background:#eefcf2}
+.notice.err{border-right-color:#c0392b;background:#fdeeec}
+h1{margin:0 0 5px;font-size:25px}
+</style></head>
+<body>
+<header><a href="./index.html">← כל הסוכנים</a>　<strong>RoyalCom AI Hub</strong></header>
+<main>
+  <section class="panel head">
+    <img class="avatar" id="photo" alt="תמונת סוכן">
+    <div>
+      <h1 id="name"></h1>
+      <div id="role" class="muted"></div>
+      <div class="muted" id="tools"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="notice" id="connection">בודקת חיבור לשרת...</div>
+    <div class="log" id="log" aria-live="polite"></div>
+  </section>
+
+  <section class="panel">
+    <label for="msg"><b>מה תרצה לשאול או לבצע?</b></label>
+    <textarea id="msg" placeholder="כתוב בקשה מקצועית לסוכן..."></textarea>
+    <div>
+      <button id="send">שלח למומחה</button>
+      <button id="mic" class="mic" type="button">🎙️ הכתבה קולית</button>
+      <button id="clear" type="button">נקה שיחה</button>
+    </div>
+    <div class="muted">מיקרופון פועל רק בדפדפנים התומכים בזיהוי דיבור (Chrome/Edge). תגובות מגיעות בזרימה חיה משרת ה-AI; אין תשובות מדומות.</div>
+  </section>
+</main>
+<script src="./chat.js"></script>
+</body></html>

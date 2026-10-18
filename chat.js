@@ -17,6 +17,16 @@ el.name.textContent = name;
 el.photo.src = 'https://api.dicebear.com/9.x/bottts-neutral/svg?seed=' + encodeURIComponent(name);
 el.photo.onerror = () => { el.photo.style.display = 'none'; };
 
+// Workspace pages (itai.html, maya.html, yuval.html) hand off a prepared
+// brief this way instead of auto-sending it, so the user still reviews and
+// sends it themselves.
+const prefillKey = 'royalcom-prefill-' + name;
+const prefill = localStorage.getItem(prefillKey);
+if (prefill) {
+  el.msg.value = prefill;
+  localStorage.removeItem(prefillKey);
+}
+
 const storageKey = 'royalcom-chat-' + name;
 let history = [];
 try {
