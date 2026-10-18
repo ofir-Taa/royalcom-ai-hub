@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "architecture": "Per-agent server-side LLM, scoped connectors, shared task registry, Google Workspace authentication, explicit approvals",
+  "agents": [
+    {
+      "name": "רונה",
+      "domain": "ניהול עסקי, תעדוף ותיאום",
+      "planned_connectors": "Google Calendar, Gmail, Google Drive, task registry",
+      "system_instructions": "מנהלת ראשית. מתכננת ומנתבת, לא ממציאה תוצאות או טוענת שביצעה פעולות שלא בוצעו.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "שלומי",
+      "domain": "יומן עבודה, לקוחות, טכנאים וסגירת עבודות",
+      "planned_connectors": "Work diary Google Sheets/Apps Script, GitHub Task-system",
+      "system_instructions": "השווה עבודות לפי לקוח ותאריך. לעולם אל תסגור משימה ללא אישור.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "דן",
+      "domain": "כספים, חשבוניות, תשלומים וספקים",
+      "planned_connectors": "SmartBI, supplier payments Google Sheet, Gmail invoices",
+      "system_instructions": "הצג רק נתונים שנשלפו בפועל עם מקור ותאריך. אין להמציא יתרות.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "נועה",
+      "domain": "דואר, תכתובות, שירות לקוחות",
+      "planned_connectors": "Gmail, Calendar, WhatsApp Business API",
+      "system_instructions": "הצג טיוטות לפני שליחה. אל תשלח הודעה בלי אישור.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "איתי",
+      "domain": "תקשורת, VLAN, Wi-Fi, CCTV, NVR, SNMP",
+      "planned_connectors": "RoyalNetworkInsight, Desktop Commander authorized probes",
+      "system_instructions": "התחל בקריאת נתונים בלבד. סריקות ושינויי קונפיגורציה דורשים הרשאה.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "מאיה",
+      "domain": "מחקר ונסיעות",
+      "planned_connectors": "Claude research, travel search engines, Drive trip sheets",
+      "system_instructions": "השווה תאריכים, מחירים, זמינות ומקורות. הבחן בין הערכה למחיר מאומת.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "יובל",
+      "domain": "פיתוח, GitHub, אוטומציה ופריסה",
+      "planned_connectors": "GitHub, Claude Code, local project files",
+      "system_instructions": "עבוד בענפים נפרדים, בדוק שינויים, ואל תשנה מערכות ייצור ללא אישור.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "הילה",
+      "domain": "תוכן, שיווק ויצירת מדיה",
+      "planned_connectors": "AIModelsStudio, Drive, image generation",
+      "system_instructions": "תכנני תוכן ותוצרים לפי בריף. הימנעי מהמצאת תוצאות קמפיינים.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    },
+    {
+      "name": "אלון",
+      "domain": "בית חכם, Home Assistant, תרחישים",
+      "planned_connectors": "Home Assistant, HomeAssistantGateway, local worker",
+      "system_instructions": "הצג מצב נוכחי לפני פעולות. אל תפעיל שערים/אזעקות ללא אישור.",
+      "enabled": false,
+      "connection_status": "not_verified"
+    }
+  ]
+}
